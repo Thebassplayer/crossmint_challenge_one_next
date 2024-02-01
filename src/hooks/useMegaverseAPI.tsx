@@ -1,4 +1,5 @@
-"use client";
+// Import types from types.ts
+import { PolyanetPosition, BatchRequests } from "../types/types"; // Replace with the actual path to your types file
 
 import { useState } from "react";
 
@@ -16,59 +17,36 @@ type APIResponse<T> = {
   error?: unknown;
 };
 
-type PolyanetRequestData = {
-  row: string;
-  column: string;
-};
-
-type SoloonRequestData = {
-  row: string;
-  column: string;
-  color: "blue" | "red" | "purple" | "white";
-};
-
-type ComethRequestData = {
-  row: string;
-  column: string;
-  direction: "up" | "down" | "right" | "left";
-};
-
-type BatchRequests = {
-  polyanets?: PolyanetRequestData[];
-  soloons?: SoloonRequestData[];
-  comeths?: ComethRequestData[];
-};
-
-async function makeRequest<T>(
-  requestData: T,
-  method: string
-): Promise<APIResponse<T>> {
-  try {
-    const request: APIRequest<T> = {
-      method,
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(requestData),
-    };
-
-    const response = await fetch(
-      `http://localhost:3000/api/polyanets`,
-      request
-    );
-    const data = await response.json();
-
-    return { data, status: response.status };
-  } catch (error) {
-    console.error(error);
-    return { status: 500, error, data: null as T };
-  }
-}
-
 export function useMegaverseAPI() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<any | null>(null);
   const [data, setData] = useState<any | null>(null);
+
+  async function makeRequest<T>(
+    requestData: T,
+    method: string
+  ): Promise<APIResponse<T>> {
+    try {
+      const request: APIRequest<T> = {
+        method,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(requestData),
+      };
+
+      const response = await fetch(
+        `http://localhost:3000/api/polyanets`,
+        request
+      );
+      const data = await response.json();
+
+      return { data, status: response.status };
+    } catch (error) {
+      console.error(error);
+      return { status: 500, error, data: null as T };
+    }
+  }
 
   async function fetchData<T>(method: string, requestData: T): Promise<void> {
     setLoading(true);
@@ -101,9 +79,9 @@ export function useMegaverseAPI() {
     }
   };
 
-  const postData = async (requestData: PolyanetRequestData) =>
+  const postData = async (requestData: PolyanetPosition) =>
     await fetchData("POST", requestData);
-  const deleteData = async (requestData: PolyanetRequestData) =>
+  const deleteData = async (requestData: PolyanetPosition) =>
     await fetchData("DELETE", requestData);
 
   return {

@@ -2,7 +2,7 @@
 import { useMegaverseAPI } from "@/hooks/useMegaverseAPI";
 import React, { useState } from "react";
 
-const CreatePolyanetsComponent = () => {
+const TogglePolyanetsComponent = () => {
   const { loading, error, data, performBatchAction, postData } =
     useMegaverseAPI();
   const [isCreating, setIsCreating] = useState(false);
@@ -11,8 +11,8 @@ const CreatePolyanetsComponent = () => {
     setIsCreating(true);
 
     const createPolyanetRequests = {
-      row: "1",
-      column: "1", // Adjust the column as needed
+      row: "2",
+      column: "2", // Adjust the column as needed
     };
     console.log(createPolyanetRequests);
 
@@ -39,7 +39,7 @@ const CreatePolyanetsComponent = () => {
     <>
       <div className="border border-white h-10 w-10">
         <button onClick={createPolyanet} disabled={isCreating}>
-          {isCreating ? "Creating..." : "Generate Polyanet"}
+          {isCreating ? "Creating..." : "🪐"}
         </button>
         {loading && <p>Loading...</p>}
         {error && <p>Error: {error.message}</p>}
@@ -49,4 +49,4 @@ const CreatePolyanetsComponent = () => {
   );
 };
 
-export default CreatePolyanetsComponent;
+export default TogglePolyanetsComponent;

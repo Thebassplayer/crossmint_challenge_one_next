@@ -7,7 +7,11 @@ type PolyanetRequest = {
   body: string;
 };
 
-export async function processPolyanetRequest(requestData: any, method: string) {
+export async function processPolyanetRequest(
+  requestData: any,
+  method: string
+): Promise<{ data?: any; status: number; error?: unknown }> {
+  console.log("processPolyanetRequest", requestData, method);
   try {
     const request: PolyanetRequest = {
       method,
@@ -16,8 +20,6 @@ export async function processPolyanetRequest(requestData: any, method: string) {
       },
       body: JSON.stringify(requestData),
     };
-
-    console.log(request);
 
     const response = await fetch(`${API_URL}/polyanets`, request);
     const data = await response.json();
@@ -39,7 +41,12 @@ export async function POST(req: Request) {
       column,
     };
 
-    return processPolyanetRequest(requestData, "POST");
+    const result = await processPolyanetRequest(requestData, "POST");
+
+    return new Response(JSON.stringify(result.data), {
+      status: result.status,
+      headers: { "Content-Type": "application/json" },
+    });
   } catch (error) {
     console.error(error);
     return new Response(JSON.stringify(error), { status: 500 });
@@ -57,7 +64,12 @@ export async function DELETE(req: Request) {
       column,
     };
 
-    return processPolyanetRequest(requestData, "DELETE");
+    const result = await processPolyanetRequest(requestData, "DELETE");
+
+    return new Response(JSON.stringify(result.data), {
+      status: result.status,
+      headers: { "Content-Type": "application/json" },
+    });
   } catch (error) {
     console.error(error);
     return new Response(JSON.stringify(error), { status: 500 });
