@@ -1,15 +1,68 @@
-/**Megaverse API docs
-The Megaverse service allows you to generate different astral objects: Polyanets, Soloons and Comeths!
+const API_URL = process.env.CROSSMINT_API_BASE_URL;
+const CANDIDATE_ID = process.env.CANDIDATE_ID;
 
-The megaverse service is a REST API. All API routes below refer to a single route: https://challenge.crossmint.io/api/...
-
-IMPORTANT: All APIs take a required parameter 'candidateId'
-Polyanets
-POST /api/polyanets with arguments 'row' and 'column' for their position in the map
-DELETE /api/polyanets with arguments 'row' and 'column' will delete a Polyanet if you made a mistake */
+type PolyanetRequest = {
+  method: string;
+  headers: Record<string, string>;
+  body: string;
+};
 
 export async function POST(req: Request) {
-  const body = await req.json();
-  console.log(body);
-  return new Response("ok");
+  try {
+    const body = await req.json();
+    const { row, column } = body;
+
+    const requestData = {
+      candidateId: CANDIDATE_ID,
+      row,
+      column,
+    };
+
+    const request: PolyanetRequest = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(requestData),
+    };
+
+    console.log(request);
+
+    const response = await fetch(`${API_URL}/polyanets`, request);
+    const data = await response.json();
+    return new Response(JSON.stringify(data), { status: 200 });
+  } catch (error) {
+    console.error(error);
+    return new Response(JSON.stringify(error), { status: 500 });
+  }
+}
+
+export async function DELETE(req: Request) {
+  try {
+    const body = await req.json();
+    const { row, column } = body;
+
+    const requestData = {
+      candidateId: CANDIDATE_ID,
+      row,
+      column,
+    };
+
+    const request: PolyanetRequest = {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(requestData),
+    };
+
+    console.log(request);
+
+    const response = await fetch(`${API_URL}/polyanets`, request);
+    const data = await response.json();
+    return new Response(JSON.stringify(data), { status: 200 });
+  } catch (error) {
+    console.error(error);
+    return new Response(JSON.stringify(error), { status: 500 });
+  }
 }
