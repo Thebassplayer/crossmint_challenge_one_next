@@ -7,6 +7,27 @@ type PolyanetRequest = {
   body: string;
 };
 
+export async function processPolyanetRequest(requestData: any, method: string) {
+  try {
+    const request: PolyanetRequest = {
+      method,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(requestData),
+    };
+
+    console.log(request);
+
+    const response = await fetch(`${API_URL}/polyanets`, request);
+    const data = await response.json();
+    return { data, status: response.status };
+  } catch (error) {
+    console.error(error);
+    return { error, status: 500 };
+  }
+}
+
 export async function POST(req: Request) {
   try {
     const body = await req.json();
@@ -18,19 +39,7 @@ export async function POST(req: Request) {
       column,
     };
 
-    const request: PolyanetRequest = {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(requestData),
-    };
-
-    console.log(request);
-
-    const response = await fetch(`${API_URL}/polyanets`, request);
-    const data = await response.json();
-    return new Response(JSON.stringify(data), { status: 200 });
+    return processPolyanetRequest(requestData, "POST");
   } catch (error) {
     console.error(error);
     return new Response(JSON.stringify(error), { status: 500 });
@@ -48,19 +57,7 @@ export async function DELETE(req: Request) {
       column,
     };
 
-    const request: PolyanetRequest = {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(requestData),
-    };
-
-    console.log(request);
-
-    const response = await fetch(`${API_URL}/polyanets`, request);
-    const data = await response.json();
-    return new Response(JSON.stringify(data), { status: 200 });
+    return processPolyanetRequest(requestData, "DELETE");
   } catch (error) {
     console.error(error);
     return new Response(JSON.stringify(error), { status: 500 });
